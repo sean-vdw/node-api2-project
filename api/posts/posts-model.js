@@ -22,7 +22,7 @@ function findById(id) {
 function insert(post) {
   return db('posts')
     .insert(post)
-    .then(ids => ({ id: ids[0] }));
+    .then(ids => ({ id: ids[0], title: post.title, contents: post.contents, created_at: post.created_at, updated_at: post.updated_at }));
 }
 
 function update(id, post) {
