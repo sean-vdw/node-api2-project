@@ -46,7 +46,41 @@ router.post('/', async (req, res) => {
 });
 
 // [PUT] '/:id'
+router.put('/:id', async (req, res) => {
+  const { id } = req.params;
+  const { body } = req;
+  const post = await Posts.findById(id);
+  try {
+    if (!post) {
+      res.status(404).json({message: "The post with the specified ID does not exist"});
+    } else if (!body.title || !body.contents) {
+      res.status(400).json({message: "Please provide title and contents for the post"});
+    } else {
+      await Posts.update(id, body);
+      const updatedPost = await Posts.findById(id);
+      res.json(updatedPost);
+    }
+  } catch(err) {
+    res.status(500).json({message: "The post information could not be modified"});
+  }
+});
+
 // [DELETE] '/:id'
+router.delete('/:id', async (req, res) => {
+  const { id } = req.params;
+  const post = await Posts.findById(id);
+  try {
+    if (!post) {
+      res.status(404).json({message: "The post with the specified ID does not exist"});
+    } else {
+      await Posts.remove(id);
+      res.json(post);
+    }
+  } catch(err) {
+    res.status(500).json({message: "The post could not be removed"});
+  }
+});
+
 // [GET]  '/:id/comments'  comments associated with specific post
 
 module.exports = router;
